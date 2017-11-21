@@ -6,21 +6,19 @@ USE  IEEE.STD_LOGIC_UNSIGNED.ALL;
 ENTITY display_vga  IS 
 	PORT( 
 	    i_clk           : IN STD_LOGIC;
-	    SWH				: IN STD_LOGIC_VECTOR ( 1 DOWNTO 0);
-	    i_M_US          : IN STD_LOGIC;
-	    i_K_US          : IN STD_LOGIC;
-	    i_H_US          : IN STD_LOGIC;
-	    i_M_BT          : IN STD_LOGIC;
-	    i_K_BT          : IN STD_LOGIC;
-	    i_H_BT          : IN STD_LOGIC;
-		KEY				: IN STD_LOGIC_VECTOR(3 DOWNTO 0 );
+	    jump 			: IN STD_LOGIC;
+		reset 			: IN STD_LOGIC;
+		start			: IN STD_LOGIC;
+		random 			: IN STD_LOGIC;
 	    VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_HS          : OUT STD_LOGIC;
 	    VGA_VS          : OUT STD_LOGIC;
 	    VGA_CLK         : OUT STD_LOGIC;
-	    VGA_BLANK       : OUT STD_LOGIC);
+	    VGA_BLANK       : OUT STD_LOGIC;
+	    hit				: OUT STD_LOGIC);
+	    
 END display_vga; 
 
 ARCHITECTURE behavioral OF display_vga  IS 
@@ -55,14 +53,17 @@ END COMPONENT;
 
 COMPONENT color_rom_vhd  IS 
 	PORT( 
-        CLOCK_50   	    : IN STD_LOGIC;
-        switch			: IN STD_LOGIC_VECTOR ( 1 DOWNTO 0);
-	    KEY		        : IN STD_LOGIC_VECTOR( 3 DOWNTO 0 );
+		CLOCK_50   	    : IN STD_LOGIC;
+		jump 			: IN STD_LOGIC;
+		reset 			: IN STD_LOGIC;
+		start			: IN STD_LOGIC;
+		random 			: IN STD_LOGIC;
 	    i_pixel_column  : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    i_pixel_row     : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_green         : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
-	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 ));
+	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
+	    hit				: OUT STD_LOGIC);
 END COMPONENT;
 
 BEGIN 
@@ -84,13 +85,16 @@ vga_driver0 : vga
 color_rom0 : color_rom_vhd 
    PORT MAP (
    CLOCK_50   	    => i_clk,
-   KEY		        => KEY,
-   switch			=> SWH,
+   jump				=> jump,
+   reset			=> reset,
+   start			=> start,
+   random			=> random,
    i_pixel_column   => pixel_column,
    i_pixel_row      => pixel_row,
    o_red            => red_color,
    o_green          => green_color,
-   o_blue           => blue_color);
+   o_blue           => blue_color,
+   hit				=> hit);
    
 red   <= red_color  (7 DOWNTO 2) ;
 green <= green_color(7 DOWNTO 2) ;
