@@ -10,7 +10,6 @@ ENTITY color_rom_vhd  IS
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
-	    KEY		        : IN STD_LOGIC_VECTOR( 1 DOWNTO 0 );
 	    i_pixel_column  : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    i_pixel_row     : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
