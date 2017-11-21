@@ -75,42 +75,42 @@ PROCESS(i_pixel_row,i_pixel_column, M_SIG, B_SIG ,clock_50hz, jump, reset)
 BEGIN
 
 	IF ( clock_50hz = '1' ) THEN
-		IF (reset = '1') THEN 
+		IF (reset = '1') THEN       -- INISIALISASI USER DAN OBSTACLES
 			U_ATAS 	:= USER_ATAS;
 			U_BAWAH := USER_BAWAH;
 			O_KIRI 	:= OBS_KIRI;
 			O_KANAN := OBS_KANAN;
-		ELSIF ((airborne = '1') or (jump = '1' )) AND (U_ATAS >= BATAS_LONCAT) THEN
+		ELSIF ((airborne = '1') or (jump = '1' )) AND (U_ATAS >= BATAS_LONCAT) THEN   -- SAAT LONCAT
 			airborne := '1';
 			U_ATAS 	:= U_ATAS - 25;
 			U_BAWAH := U_BAWAH - 25 ;
 			IF ( U_ATAS = BATAS_LONCAT) THEN
 				SENTUH := '1';
 			END IF;
-		ELSIF ((sentuh = '1') AND (U_BAWAH  <= BATAS_BAWAH)) THEN
+		ELSIF ((sentuh = '1') AND (U_BAWAH  <= BATAS_BAWAH)) THEN      -- SAAT JATUH
 			U_ATAS 	:= U_ATAS + 25;
 			U_BAWAH := U_BAWAH + 25 ;
 			IF ( U_BAWAH = BATAS_BAWAH) THEN
 				SENTUH := '0';
 				airborne := '0';
 			END IF;
-		ELSIF ((airborne = '0') AND (reset = '0')) THEN
+		ELSIF ((airborne = '0') AND (reset = '0')) THEN     -- SAAT KONDISI IDLE
 			U_ATAS 	:= U_ATAS;
 			U_BAWAH := U_BAWAH;
 		END IF;
 			
-		IF (((random = '1') OR (gerak = '1')) AND (O_KIRI >= O_KI)) THEN
+		IF (((random = '1') OR (gerak = '1')) AND (O_KIRI >= O_KI)) THEN   -- SAAT GERAK MENDEKATI USER
 			gerak 	:= '1';
 			O_KIRI 	:= O_KIRI - 5;
 			O_KANAN := O_KANAN - 5;
-			IF (O_KIRI = O_KI) THEN
+			IF (O_KIRI = O_KI) THEN    --SAAT BOX KIRI UDAH SAMPAI UJUNG KIRI LANGSUNG NGILANG
 				O_KIRI 	:= OBS_KIRI;
 				O_KANAN := OBS_KANAN;
 				gerak 	:= '0';
 			END IF;
 		END IF;
 
-		IF ((USER_KANAN = O_KIRI AND U_BAWAH >= OBS_ATAS) OR U_BAWAH = OBS_ATAS) THEN
+		IF ((USER_KANAN = O_KIRI AND U_BAWAH >= OBS_ATAS) OR U_BAWAH = OBS_ATAS) THEN   --NGASIH TAU KENA ATAU ENGGA
 			hit := '1';
 		END IF;
 	END IF;
@@ -123,9 +123,9 @@ BEGIN
   ELSE M_SIG <=  '0';
   END IF;
 
-  IF (B_SIG = '1') THEN  o_red <= X"00"; o_green <= X"00"; o_blue <= X"FF"; 
-  ELSIF (M_SIG = '1') THEN  o_red <= X"FF"; o_green <= X"00"; o_blue <= X"00";
-  ELSE o_red <= X"FF"; o_green <= X"FF"; o_blue <= X"FF";
+  IF (B_SIG = '1') THEN  o_red <= X"00"; o_green <= X"00"; o_blue <= X"FF";     --OUTPUT WARNA BIRU UNTUK USER
+  ELSIF (M_SIG = '1') THEN  o_red <= X"FF"; o_green <= X"00"; o_blue <= X"00";  --OUTPUT WARNA MERAH UNTUK OBSTACLES
+  ELSE o_red <= X"FF"; o_green <= X"FF"; o_blue <= X"FF";						--OUTPUT WARNA PUTIH UNTUK BACKGROUND
   END IF;
  
 END PROCESS;
