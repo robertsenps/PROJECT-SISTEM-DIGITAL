@@ -4,7 +4,7 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 
 ENTITY fsm IS
-	PORT(	i_clk			: IN STD_LOGIC;
+	PORT(	i_clk			: IN BIT;
 			start			: IN STD_LOGIC;
 			reset			: IN STD_LOGIC;
 			airborne		: IN STD_LOGIC;
@@ -19,27 +19,14 @@ END fsm;
 ARCHITECTURE behavioral OF fsm IS
 	TYPE state_type IS (Init, A, B, C, D);
 	SIGNAL s 		: state_type;
-	SIGNAL clock	: BIT;
-
-	COMPONENT clockdiv IS
-		PORT(	CLK		: IN STD_LOGIC;
-				div		: INTEGER;
-				DIVOUT	: BUFFER BIT
-			);
-	END COMPONENT;
 
 BEGIN
-	
-	CLOCKSET : clockdiv
-	PORT MAP(	CLK => i_clk,
-				div => 500000,
-				DIVOUT	=> clock);
 
-	PROCESS (reset, clock)
+	PROCESS (reset, i_clk)
 	BEGIN
-		IF reset = '1' THEN
+		IF (i_clk'EVENT AND i_clk = '1') AND (reset = '1') THEN
 			s <= Init;
-		ELSIF (clock'EVENT AND clock = '1') THEN
+		ELSIF (i_clk'EVENT AND i_clk = '1') THEN
 			IF finish_counter = '1' THEN
 				s <= D;
 			ELSIF die = '1' THEN
