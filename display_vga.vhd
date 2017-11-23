@@ -5,7 +5,7 @@ USE  IEEE.STD_LOGIC_UNSIGNED.ALL;
  
 ENTITY display_vga  IS 
 	PORT( 
-	    i_clk           : IN STD_LOGIC;
+	    i_clk           : IN BIT;
 	    jump 			: IN STD_LOGIC;
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
@@ -17,8 +17,9 @@ ENTITY display_vga  IS
 	    VGA_VS          : OUT STD_LOGIC;
 	    VGA_CLK         : OUT STD_LOGIC;
 	    VGA_BLANK       : OUT STD_LOGIC;
-	    hit				: OUT STD_LOGIC);
-	    
+	    hit				: OUT STD_LOGIC;
+		airborne		: OUT STD_LOGIC);
+		
 END display_vga; 
 
 ARCHITECTURE behavioral OF display_vga  IS 
@@ -38,7 +39,7 @@ SIGNAL  blue_on             :        STD_LOGIC;
 
 COMPONENT vga  IS 
 	PORT( 
-		i_clk              :  IN   STD_LOGIC; 
+		i_clk              :  IN   BIT; 
 		i_red              :  IN   STD_LOGIC; 
 		i_green            :  IN   STD_LOGIC; 
 		i_blue             :  IN   STD_LOGIC; 
@@ -53,17 +54,19 @@ END COMPONENT;
 
 COMPONENT color_rom_vhd  IS 
 	PORT( 
-		CLOCK_50   	    : IN STD_LOGIC;
+		CLOCK   	    : IN BIT;
 		jump 			: IN STD_LOGIC;
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
+		airborne		: OUT STD_LOGIC;
 	    i_pixel_column  : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    i_pixel_row     : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_green         : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    hit				: OUT STD_LOGIC);
+	    
 END COMPONENT;
 
 BEGIN 
@@ -84,11 +87,12 @@ vga_driver0 : vga
 
 color_rom0 : color_rom_vhd 
    PORT MAP (
-   CLOCK_50   	    => i_clk,
+   CLOCK	   	    => i_clk,
    jump				=> jump,
    reset			=> reset,
    start			=> start,
    random			=> random,
+   airborne			=> airborne,
    i_pixel_column   => pixel_column,
    i_pixel_row      => pixel_row,
    o_red            => red_color,
