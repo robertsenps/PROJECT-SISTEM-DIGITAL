@@ -5,7 +5,7 @@ USE  IEEE.STD_LOGIC_UNSIGNED.ALL;
  
 ENTITY vga  IS 
 	PORT(  
-		i_clk              :  IN   STD_LOGIC; 
+		i_clk              :  IN   BIT; 
 		i_red              :  IN   STD_LOGIC; 
 		i_green            :  IN   STD_LOGIC; 
 		i_blue             :  IN   STD_LOGIC; 
@@ -30,7 +30,6 @@ CONSTANT TVB1   : INTEGER := 494;
 CONSTANT TVB2   : INTEGER := 495;
 CONSTANT TVD    : INTEGER := 480;
 
-SIGNAL clock_25MHz  :  STD_LOGIC; 
 SIGNAL horiz_sync   :  STD_LOGIC; 
 SIGNAL vert_sync    :  STD_LOGIC; 
 SIGNAL video_on     :  STD_LOGIC; 
@@ -50,20 +49,9 @@ o_blue      <= i_blue AND video_on;
 o_horiz_sync  <= horiz_sync; 
 o_vert_sync   <= vert_sync; 
 
-PROCESS (i_clk)
-	BEGIN
-		IF i_clk'EVENT AND i_clk='1' THEN
-			IF (clock_25MHz = '0') THEN
-				clock_25MHz <= '1';
-			ELSE
-				clock_25MHz <= '0';
-			END IF;
-		END IF;
-	END PROCESS;
-
 PROCESS 
 	BEGIN 
-	WAIT UNTIL(  clock_25MHz'EVENT  ) AND ( clock_25MHz  = '1'  ); 
+	WAIT UNTIL(i_clk'EVENT  ) AND ( i_clk  = '1'  ); 
 	IF ( h_count  = TH-1 ) THEN 
 		h_count  <= (others=>'0'); 
 	ELSE 
