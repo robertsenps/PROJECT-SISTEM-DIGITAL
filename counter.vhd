@@ -6,6 +6,7 @@ USE ieee.std_logic_unsigned.all;
 ENTITY counter IS
 	PORT(	i_clk			: IN STD_LOGIC;
 			start			: IN STD_LOGIC;
+			current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 			finish_counter	: OUT STD_LOGIC
 		);
 END counter;
@@ -53,6 +54,7 @@ BEGIN
 		END IF;
 	END PROCESS;
 	
+	current_count <= count;
 	finish_counter <= f_condition;
 	
 END behavioral;
