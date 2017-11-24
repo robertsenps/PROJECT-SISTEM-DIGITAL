@@ -43,9 +43,9 @@ PORT(
 	i_clk			: IN BIT;
 	start			: IN STD_LOGIC;
 	reset			: IN STD_LOGIC;
-	airborne		: IN STD_LOGIC;
+	airborne		: BUFFER STD_LOGIC;
 	jump			: IN STD_LOGIC;
-	die				: IN STD_LOGIC;
+	die				: BUFFER STD_LOGIC;
 	finish_counter	: IN STD_LOGIC;
 	finish			: OUT STD_LOGIC;
 	game_over		: OUT STD_LOGIC);
@@ -58,7 +58,6 @@ PORT(
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
-		airborne		: OUT STD_LOGIC;
 	    VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
@@ -66,7 +65,8 @@ PORT(
 	    VGA_VS          : OUT STD_LOGIC;
 	    VGA_CLK         : OUT STD_LOGIC;
 	    VGA_BLANK       : OUT STD_LOGIC;
-	    hit				: OUT STD_LOGIC);
+	    hit				: BUFFER STD_LOGIC;
+	    airborne		: BUFFER STD_LOGIC);
 	    
 END COMPONENT;
 
@@ -116,7 +116,6 @@ PORT MAP(
 	reset 			=> reset,
 	start			=> start,
 	random 			=> randomz,
-	airborne		=> airborne,
     VGA_R           => VGA_R,
     VGA_G           => VGA_G,
     VGA_B           => VGA_B,
@@ -124,7 +123,8 @@ PORT MAP(
     VGA_VS          => VGA_VS,
     VGA_CLK         => VGA_CLK,
     VGA_BLANK       => VGA_BLANK,
-    hit				=> hit
+    hit				=> hit,
+    airborne		=> airborne
 );
 
 mainstage : fsm

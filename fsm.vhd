@@ -7,9 +7,9 @@ ENTITY fsm IS
 	PORT(	i_clk			: IN BIT;
 			start			: IN STD_LOGIC;
 			reset			: IN STD_LOGIC;
-			airborne		: IN STD_LOGIC;
+			airborne		: BUFFER STD_LOGIC;
 			jump			: IN STD_LOGIC;
-			die				: IN STD_LOGIC;
+			die				: BUFFER STD_LOGIC;
 			finish_counter	: IN STD_LOGIC;
 			finish			: OUT STD_LOGIC;
 			game_over		: OUT STD_LOGIC	

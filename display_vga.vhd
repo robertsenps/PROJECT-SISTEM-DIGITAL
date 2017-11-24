@@ -17,8 +17,8 @@ ENTITY display_vga  IS
 	    VGA_VS          : OUT STD_LOGIC;
 	    VGA_CLK         : OUT STD_LOGIC;
 	    VGA_BLANK       : OUT STD_LOGIC;
-	    hit				: OUT STD_LOGIC;
-		airborne		: OUT STD_LOGIC);
+	    hit				: BUFFER STD_LOGIC;
+		airborne		: BUFFER STD_LOGIC);
 		
 END display_vga; 
 
