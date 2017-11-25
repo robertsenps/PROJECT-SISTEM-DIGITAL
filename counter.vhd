@@ -4,7 +4,7 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 
 ENTITY counter IS
-	PORT(	i_clk			: IN STD_LOGIC;
+	PORT(	i_clk			: IN BIT;
 			start			: IN STD_LOGIC;
 			current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 			finish_counter	: OUT STD_LOGIC
@@ -18,7 +18,7 @@ ARCHITECTURE behavioral OF counter IS
 	SIGNAL stopper		: STD_LOGIC;
 	
 	COMPONENT clockdiv IS
-		PORT(	CLK	: IN STD_LOGIC;
+		PORT(	CLK	: IN BIT;
 				div	: INTEGER;
 				DIVOUT	: BUFFER BIT
 			);
