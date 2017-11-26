@@ -84,3 +84,17 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE ../game.vwf
 set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE ../game.vwf
 set_global_assignment -name SOURCE_FILE game.qsf
 set_global_assignment -name MISC_FILE "C:/Users/rober/Desktop/Modul 6/game.dpf"
+set_location_assignment PIN_J2 -to HEX1[1]
+set_location_assignment PIN_J1 -to HEX1[2]
+set_location_assignment PIN_H2 -to HEX1[3]
+set_location_assignment PIN_H1 -to HEX1[4]
+set_location_assignment PIN_F2 -to HEX1[5]
+set_location_assignment PIN_F1 -to HEX1[6]
+set_location_assignment PIN_E2 -to HEX1[7]
+set_location_assignment PIN_E1 -to HEX2[1]
+set_location_assignment PIN_H6 -to HEX2[2]
+set_location_assignment PIN_H5 -to HEX2[3]
+set_location_assignment PIN_H4 -to HEX2[4]
+set_location_assignment PIN_G3 -to HEX2[5]
+set_location_assignment PIN_D2 -to HEX2[6]
+set_location_assignment PIN_D1 -to HEX2[7]

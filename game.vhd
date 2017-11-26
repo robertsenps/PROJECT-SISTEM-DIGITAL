@@ -14,8 +14,6 @@ ENTITY game IS
 	    VGA_VS		: OUT STD_LOGIC;
 	    VGA_CLK		: OUT STD_LOGIC;
 	    VGA_BLANK	: OUT STD_LOGIC;
-	    LEDR		: OUT STD_LOGIC_VECTOR( 9 DOWNTO 0 );
-	    LEDG		: OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    HEX1		: OUT STD_LOGIC_VECTOR(1 TO 7);
 	    HEX2		: OUT STD_LOGIC_VECTOR(1 TO 7)
 	    );
@@ -188,49 +186,4 @@ PORT MAP(
 	HEX2	=> HEX2
 		);
 
-PROCESS (f_counter,gameover,clock25Mhz,reset)
-BEGIN
-	IF(f_counter = '1') THEN
-				LEDG(0) <= '1';
-				LEDG(1) <= '1';
-				LEDG(2) <= '1';
-				LEDG(3) <= '1';
-				LEDG(4) <= '1';
-				LEDG(5) <= '1';
-				LEDG(6) <= '1';
-				LEDG(7) <= '1';
-	ELSIF(gameover = '1') THEN
-				LEDR(0) <= '1';
-				LEDR(1) <= '1';
-				LEDR(2) <= '1';
-				LEDR(3) <= '1';
-				LEDR(4) <= '1';
-				LEDR(5) <= '1';
-				LEDR(6) <= '1';
-				LEDR(7) <= '1';
-				LEDR(8) <= '1';
-				LEDR(9) <= '1';
-	END IF;
-	
-	IF (reset = '1') THEN
-				LEDR(0) <= '0';
-				LEDR(1) <= '0';
-				LEDR(2) <= '0';
-				LEDR(3) <= '0';
-				LEDR(4) <= '0';
-				LEDR(5) <= '0';
-				LEDR(6) <= '0';
-				LEDR(7) <= '0';
-				LEDR(8) <= '0';
-				LEDR(9) <= '0';
-				LEDG(0) <= '0';
-				LEDG(1) <= '0';
-				LEDG(2) <= '0';
-				LEDG(3) <= '0';
-				LEDG(4) <= '0';
-				LEDG(5) <= '0';
-				LEDG(6) <= '0';
-				LEDG(7) <= '0';
-	END IF;
-END PROCESS;
 END behavioral;
