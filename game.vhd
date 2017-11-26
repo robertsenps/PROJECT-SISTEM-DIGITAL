@@ -12,10 +12,12 @@ ENTITY game IS
 	    VGA_B		: OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_HS		: OUT STD_LOGIC;
 	    VGA_VS		: OUT STD_LOGIC;
-	    VGA_CLK		: OUT STD_LOGIC;
-	    VGA_BLANK	: OUT STD_LOGIC;
+--	    VGA_CLK		: OUT STD_LOGIC;
+--	    VGA_BLANK	: OUT STD_LOGIC;
 	    HEX1		: OUT STD_LOGIC_VECTOR(1 TO 7);
-	    HEX2		: OUT STD_LOGIC_VECTOR(1 TO 7)
+	    HEX2		: OUT STD_LOGIC_VECTOR(1 TO 7);
+	    LEDR		: OUT STD_LOGIC_VECTOR(0 TO 9);
+	    LEDG		: OUT STD_LOGIC_VECTOR(0 TO 7)
 	    );
 END game;
 
@@ -28,8 +30,12 @@ SIGNAL f_counter	: STD_LOGIC;
 SIGNAL s_finish		: STD_LOGIC;
 SIGNAL gameover		: STD_LOGIC;
 SIGNAL randomz		: STD_LOGIC;
-SIGNAL hit			: STD_LOGIC;
-SIGNAL airborne		: STD_LOGIC;
+SIGNAL hit_i		: STD_LOGIC;
+SIGNAL hit_o1		: STD_LOGIC;
+SIGNAL hit_o2		: STD_LOGIC;
+SIGNAL airborne_i	: STD_LOGIC;
+SIGNAL airborne_o1	: STD_LOGIC;
+SIGNAL airborne_o2	: STD_LOGIC;
 SIGNAL count		: STD_LOGIC_VECTOR(3 DOWNTO 0);
 SIGNAL clock25MHz 	: BIT;
 SIGNAL clock5hz		: BIT;
@@ -41,8 +47,8 @@ PORT(
 	reset			: IN STD_LOGIC;
 	jump			: IN STD_LOGIC;
 	finish_counter	: IN STD_LOGIC;
-	airborne		: BUFFER STD_LOGIC;
-	die				: BUFFER STD_LOGIC;
+	airborne		: IN STD_LOGIC;
+	die				: IN STD_LOGIC;
 	finish			: OUT STD_LOGIC;
 	game_over		: OUT STD_LOGIC
 	);
@@ -55,15 +61,16 @@ PORT(
 	reset 			: IN STD_LOGIC;
 	start			: IN STD_LOGIC;
 	random 			: IN STD_LOGIC;
-	hit				: BUFFER STD_LOGIC;
-	airborne		: BUFFER STD_LOGIC;
+	hit_i			: IN STD_LOGIC;
+	hit_o			: OUT STD_LOGIC;
+	airborne		: OUT STD_LOGIC;
 	VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_HS          : OUT STD_LOGIC;
-	VGA_VS          : OUT STD_LOGIC;
-	VGA_CLK         : OUT STD_LOGIC;
-	VGA_BLANK       : OUT STD_LOGIC
+	VGA_VS          : OUT STD_LOGIC
+--	VGA_CLK         : OUT STD_LOGIC;
+--	VGA_BLANK       : OUT STD_LOGIC
 	);
 END COMPONENT;
 
@@ -79,6 +86,7 @@ COMPONENT counter IS
 PORT(	
 	i_clk			: IN STD_LOGIC;
 	start			: IN STD_LOGIC;
+	die				: IN STD_LOGIC;
 	current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 	finish_counter	: OUT STD_LOGIC
 	);
@@ -109,25 +117,25 @@ PORT MAP(
 	DIVOUT	=> clock25MHz
 		);
 
-clockset1 : clockdiv
-PORT MAP(
-	CLK		=> CLOCK_50,
-	div		=> 5000000,
-	DIVOUT	=> clock5Hz
-		);
+--clockset1 : clockdiv
+--PORT MAP(
+--	CLK		=> CLOCK_50,
+--	div		=> 5000000,
+--	DIVOUT	=> clock5Hz
+--		);
 	
 PROCESS (KEY,clock25MHz)
 BEGIN
 	IF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(2) = '0') THEN
 		reset <= '1';
-		hit   <= '0';
+		hit_o1 <= '0';
 	ELSIF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(1) = '0') THEN
 		start <= '1';
 		reset <= '0';
 	ELSIF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(0) = '0') THEN
 		start <= '0';
 		jump <= '1';
-		airborne <= '1';
+		airborne_o1 <= '1';
 	ELSIF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(2) = '1' AND KEY(1) = '1' AND KEY(0) = '1') THEN
 		jump  <= '0';
 	END IF;
@@ -147,15 +155,16 @@ PORT MAP(
 	reset 			=> reset,
 	start			=> start,
 	random 			=> randomz,
-    hit				=> hit,
-    airborne		=> airborne,
+    hit_i			=> hit_i,
+    hit_o			=> hit_o2,
+    airborne		=> airborne_o2,
     VGA_R           => VGA_R,
     VGA_G           => VGA_G,
     VGA_B           => VGA_B,
     VGA_HS          => VGA_HS,
-    VGA_VS          => VGA_VS,
-    VGA_CLK         => VGA_CLK,
-    VGA_BLANK       => VGA_BLANK
+    VGA_VS          => VGA_VS
+--  VGA_CLK         => VGA_CLK,
+--  VGA_BLANK       => VGA_BLANK
 );
 
 mainstage : fsm
@@ -165,8 +174,8 @@ PORT MAP(
 	reset			=> reset,
 	jump			=> jump,
 	finish_counter	=> f_counter,
-	airborne		=> airborne,
-	die				=> hit,
+	airborne		=> airborne_i,
+	die				=> hit_i,
 	finish			=> s_finish,
 	game_over		=> gameover
 );
@@ -175,6 +184,7 @@ counting : counter
 PORT MAP(
 	i_clk			=> CLOCK_50,
 	start			=> start,
+	die				=> hit_i,
 	current_count	=> count,
 	finish_counter	=> f_counter
 		);
@@ -185,5 +195,22 @@ PORT MAP(
 	HEX1	=> HEX1,
 	HEX2	=> HEX2
 		);
+
+PROCESS (s_finish, gameover)
+BEGIN
+	IF s_finish = '1' THEN
+		LEDG <= "11111111";
+		LEDR <= "0000000000";
+	ELSIF gameover = '1' THEN
+		LEDG <= "00000000";
+		LEDR <= "1111111111";
+	ELSE
+		LEDG <= "00000000";
+		LEDR <= "0000000000";
+	END IF;
+END PROCESS;
+
+hit_i <= hit_o1 OR hit_o2;
+airborne_i <= airborne_o1 OR airborne_o2;
 
 END behavioral;

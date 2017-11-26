@@ -10,15 +10,16 @@ ENTITY display_vga  IS
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
-	    hit				: BUFFER STD_LOGIC;
-		airborne		: BUFFER STD_LOGIC;
+	    hit_i			: IN STD_LOGIC;
+	    hit_o			: OUT STD_LOGIC;
+		airborne		: OUT STD_LOGIC;
 	    VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_HS          : OUT STD_LOGIC;
-	    VGA_VS          : OUT STD_LOGIC;
-	    VGA_CLK         : OUT STD_LOGIC;
-	    VGA_BLANK       : OUT STD_LOGIC);
+	    VGA_VS          : OUT STD_LOGIC);
+--	    VGA_CLK         : OUT STD_LOGIC;
+--	    VGA_BLANK       : OUT STD_LOGIC);
 		
 END display_vga; 
 
@@ -63,7 +64,8 @@ COMPONENT color_rom_vhd  IS
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_green         : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
-	    hit				: BUFFER STD_LOGIC;
+	    hit_i			: IN STD_LOGIC;
+	    hit_o			: OUT STD_LOGIC;
 		airborne		: OUT STD_LOGIC);
 	    
 END COMPONENT;
@@ -96,7 +98,8 @@ color_rom0 : color_rom_vhd
    o_red            => red_color,
    o_green          => green_color,
    o_blue           => blue_color,
-   hit				=> hit,
+   hit_i			=> hit_i,
+   hit_o			=> hit_o,
    airborne			=> airborne
    );
    

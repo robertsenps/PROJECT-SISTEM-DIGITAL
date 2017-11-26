@@ -61,7 +61,7 @@ set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name LL_ROOT_REGION ON -section_id "Root Region"
 set_global_assignment -name LL_MEMBER_STATE LOCKED -section_id "Root Region"
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "3.3-V LVTTL"
-set_location_assignment PIN_L1 -to CLOCK_50
+set_location_assignment PIN_D12 -to CLOCK_50
 set_location_assignment PIN_T22 -to KEY[2]
 set_location_assignment PIN_R21 -to KEY[1]
 set_location_assignment PIN_R22 -to KEY[0]
@@ -98,3 +98,21 @@ set_location_assignment PIN_H4 -to HEX2[4]
 set_location_assignment PIN_G3 -to HEX2[5]
 set_location_assignment PIN_D2 -to HEX2[6]
 set_location_assignment PIN_D1 -to HEX2[7]
+set_location_assignment PIN_U22 -to LEDG[0]
+set_location_assignment PIN_U21 -to LEDG[1]
+set_location_assignment PIN_V22 -to LEDG[2]
+set_location_assignment PIN_V21 -to LEDG[3]
+set_location_assignment PIN_W22 -to LEDG[4]
+set_location_assignment PIN_W21 -to LEDG[5]
+set_location_assignment PIN_Y22 -to LEDG[6]
+set_location_assignment PIN_Y21 -to LEDG[7]
+set_location_assignment PIN_R20 -to LEDR[0]
+set_location_assignment PIN_R19 -to LEDR[1]
+set_location_assignment PIN_U19 -to LEDR[2]
+set_location_assignment PIN_Y19 -to LEDR[3]
+set_location_assignment PIN_T18 -to LEDR[4]
+set_location_assignment PIN_V19 -to LEDR[5]
+set_location_assignment PIN_Y18 -to LEDR[6]
+set_location_assignment PIN_U18 -to LEDR[7]
+set_location_assignment PIN_R18 -to LEDR[8]
+set_location_assignment PIN_R17 -to LEDR[9]

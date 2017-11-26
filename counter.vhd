@@ -7,6 +7,7 @@ ENTITY counter IS
 	PORT(	
 		i_clk			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
+		die				: IN STD_LOGIC;
 		current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 		finish_counter	: OUT STD_LOGIC
 		);
@@ -32,7 +33,7 @@ BEGIN
 					div		=> 50000000,
 					DIVOUT	=> clock);
 	
-	PROCESS (clock,start)
+	PROCESS (clock,start,die)
 		CONSTANT max_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0001";
 		CONSTANT min_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";
 	
@@ -45,11 +46,13 @@ BEGIN
 			IF f_condition = '1' THEN
 				f_condition <= '0';
 			ELSIF stopper = '0' THEN
-				IF count < max_count THEN
-					count <= count + 1;
-				ELSE
-					f_condition <= '1';
-					stopper <= '1';
+				IF die = '0' THEN
+					IF count < max_count THEN
+						count <= count + 1;
+					ELSE
+						f_condition <= '1';
+						stopper <= '1';
+					END IF;
 				END IF;
 			END IF;
 		END IF;

@@ -15,7 +15,8 @@ ENTITY color_rom_vhd  IS
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_green         : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
-	    hit				: BUFFER STD_LOGIC;
+	    hit_i			: IN STD_LOGIC;
+	    hit_o			: OUT STD_LOGIC;
 	    airborne		: OUT STD_LOGIC);
 	    
 END color_rom_vhd; 
@@ -27,6 +28,7 @@ SIGNAL loncat			: STD_LOGIC;  -- menyimpan temp saat loncat
 SIGNAL sentuh			: STD_LOGIC;
 SIGNAL gerak			: STD_LOGIC;
 SIGNAL clk100Hz			: BIT;
+--SIGNAL impact			: STD_LOGIC;
 
 COMPONENT clockdiv IS
 PORT(
@@ -45,7 +47,7 @@ PORT MAP(
 	DIVOUT 	=> clk100hz
 		);
 
-PROCESS(i_pixel_row,i_pixel_column, M_SIG, B_SIG, jump, reset,clk100Hz,hit)
+PROCESS(i_pixel_row,i_pixel_column, M_SIG, B_SIG, jump, reset,clk100Hz,hit_i)
 
 -- KONDISI AWAL :
 	-- USER :
@@ -81,7 +83,7 @@ PROCESS(i_pixel_row,i_pixel_column, M_SIG, B_SIG, jump, reset,clk100Hz,hit)
 	CONSTANT KIRI		: INTEGER := 0;
 	CONSTANT KANAN		: INTEGER := 640;
 BEGIN
-	IF (hit = '0') THEN
+	IF (hit_i = '0') THEN
 		IF (clk100Hz'EVENT AND clk100Hz = '1' ) THEN
 		IF (reset = '1') THEN       -- INISIALISASI USER DAN OBSTACLES
 			U_ATAS 	:= USER_ATAS;
@@ -121,11 +123,12 @@ BEGIN
 			END IF;
 		END IF;
 		END IF;
-		
-		IF ((USER_KANAN = O_KIRI AND U_BAWAH >= OBS_ATAS) OR U_BAWAH = OBS_ATAS) THEN   --NGASIH TAU KENA ATAU ENGGA
-			hit <= '1';
+		IF (clk100Hz'EVENT AND clk100Hz = '1') THEN
+			IF ((USER_KANAN = O_KIRI AND U_BAWAH >= OBS_ATAS) OR U_BAWAH = OBS_ATAS) THEN   --NGASIH TAU KENA ATAU ENGGA
+				hit_o <= '1';
+			END IF;
 		END IF;
-	ELSIF (hit = '1') THEN
+	ELSIF (hit_i = '1') THEN
 		U_ATAS := 0;
 		U_BAWAH := 480;
 		USER_KIRI := 0;
@@ -146,5 +149,7 @@ BEGIN
   END IF;
  
 END PROCESS;
+
+--hit_o <= impact;
 
 END behavioral;
