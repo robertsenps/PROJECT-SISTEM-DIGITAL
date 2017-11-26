@@ -4,10 +4,11 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 
 ENTITY counter IS
-	PORT(	i_clk			: IN BIT;
-			start			: IN STD_LOGIC;
-			current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-			finish_counter	: OUT STD_LOGIC
+	PORT(	
+		i_clk			: IN STD_LOGIC;
+		start			: IN STD_LOGIC;
+		current_count	: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+		finish_counter	: OUT STD_LOGIC
 		);
 END counter;
 
@@ -18,7 +19,7 @@ ARCHITECTURE behavioral OF counter IS
 	SIGNAL stopper		: STD_LOGIC;
 	
 	COMPONENT clockdiv IS
-		PORT(	CLK	: IN BIT;
+		PORT(	CLK	: IN STD_LOGIC;
 				div	: INTEGER;
 				DIVOUT	: BUFFER BIT
 			);
@@ -31,8 +32,8 @@ BEGIN
 					div		=> 50000000,
 					DIVOUT	=> clock);
 	
-	PROCESS (clock)
-		CONSTANT max_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
+	PROCESS (clock,start)
+		CONSTANT max_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0001";
 		CONSTANT min_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";
 	
 	BEGIN

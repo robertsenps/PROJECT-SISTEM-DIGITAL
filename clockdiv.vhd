@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 
 entity clockdiv is port(
-	CLK		: IN BIT;
+	CLK		: IN STD_LOGIC;
 	div		: integer;
 	DIVOUT	: buffer BIT);
 end clockdiv;

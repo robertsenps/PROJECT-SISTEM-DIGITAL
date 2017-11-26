@@ -5,7 +5,7 @@ USE  IEEE.STD_LOGIC_UNSIGNED.ALL;
  
 ENTITY vga  IS 
 	PORT(  
-		i_clk              :  IN   BIT; 
+		i_clk              :  IN   STD_LOGIC; 
 		i_red              :  IN   STD_LOGIC; 
 		i_green            :  IN   STD_LOGIC; 
 		i_blue             :  IN   STD_LOGIC; 
@@ -37,9 +37,25 @@ SIGNAL video_on_v   :  STD_LOGIC;
 SIGNAL video_on_h   :  STD_LOGIC; 
 SIGNAL h_count      :  STD_LOGIC_VECTOR( 9 DOWNTO 0 ); 
 SIGNAL v_count      :  STD_LOGIC_VECTOR( 9 DOWNTO 0 ); 
+SIGNAL clk25Mhz		:  BIT;
+
+COMPONENT clockdiv IS
+PORT(
+	CLK				: IN std_logic;
+	div				: integer;
+	DIVOUT			: buffer BIT
+	);
+END COMPONENT;
 
 BEGIN 
 
+clock25Mhz : clockdiv
+PORT MAP(
+	CLK		=> i_clk,
+	div		=> 1,
+	DIVOUT	=> clk25Mhz
+		);
+		
 video_on    <= video_on_h  AND video_on_v; 
 
 o_red       <= i_red AND video_on; 
@@ -51,7 +67,7 @@ o_vert_sync   <= vert_sync;
 
 PROCESS 
 	BEGIN 
-	WAIT UNTIL(i_clk'EVENT  ) AND ( i_clk  = '1'  ); 
+	WAIT UNTIL(clk25Mhz'EVENT  ) AND ( clk25Mhz	 = '1'  ); 
 	IF ( h_count  = TH-1 ) THEN 
 		h_count  <= (others=>'0'); 
 	ELSE 

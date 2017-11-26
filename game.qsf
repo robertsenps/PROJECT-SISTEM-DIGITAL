@@ -82,3 +82,5 @@ set_location_assignment PIN_B11 -to VGA_VS
 set_global_assignment -name MISC_FILE "F:/Naufal Thariq/Documents/Kuliah/Akademik/Semester 3/EL2102 Praktikum Sistem Digital/M6 Proyek Perancangan Rangkaian Digital/PROJECT-SISTEM-DIGITAL-master/game.dpf"
 set_global_assignment -name VECTOR_WAVEFORM_FILE ../game.vwf
 set_global_assignment -name INCREMENTAL_VECTOR_INPUT_SOURCE ../game.vwf
+set_global_assignment -name SOURCE_FILE game.qsf
+set_global_assignment -name MISC_FILE "C:/Users/rober/Desktop/Modul 6/game.dpf"

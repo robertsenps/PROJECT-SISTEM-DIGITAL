@@ -4,29 +4,46 @@ USE ieee.std_logic_arith.all;
 USE ieee.std_logic_unsigned.all;
 
 ENTITY fsm IS
-	PORT(	i_clk			: IN BIT;
-			start			: IN STD_LOGIC;
-			reset			: IN STD_LOGIC;
-			airborne		: BUFFER STD_LOGIC;
-			jump			: IN STD_LOGIC;
-			die				: BUFFER STD_LOGIC;
-			finish_counter	: IN STD_LOGIC;
-			finish			: OUT STD_LOGIC;
-			game_over		: OUT STD_LOGIC	
+	PORT(	
+		i_clk			: IN STD_LOGIC;
+		start			: IN STD_LOGIC;
+		reset			: IN STD_LOGIC;
+		jump			: IN STD_LOGIC;
+		finish_counter	: IN STD_LOGIC;
+		airborne		: BUFFER STD_LOGIC;
+		die				: BUFFER STD_LOGIC;
+		finish			: OUT STD_LOGIC;
+		game_over		: OUT STD_LOGIC	
 		);
 END fsm;
 
 ARCHITECTURE behavioral OF fsm IS
 	TYPE state_type IS (Init, A, B, C, D);
 	SIGNAL s 		: state_type;
+	SIGNAL clk25MHz	: BIT;
+
+COMPONENT clockdiv IS
+PORT(
+	CLK				: IN std_logic;
+	div				: integer;
+	DIVOUT			: buffer BIT
+	);
+END COMPONENT;
 
 BEGIN
 
-	PROCESS (reset, i_clk)
+clock50hz : clockdiv
+PORT MAP(
+	CLK 	=> i_clk,
+	div		=> 1,
+	DIVOUT	=> clk25MHz
+		);
+
+	PROCESS (reset, clk25MHz)
 	BEGIN
-		IF (i_clk'EVENT AND i_clk = '1') AND (reset = '1') THEN
+		IF (clk25MHz'EVENT AND clk25MHz = '1') AND (reset = '1') THEN
 			s <= Init;
-		ELSIF (i_clk'EVENT AND i_clk = '1') THEN
+		ELSIF (clk25MHz'EVENT AND clk25MHz = '1') THEN
 			IF finish_counter = '1' THEN
 				s <= D;
 			ELSIF die = '1' THEN

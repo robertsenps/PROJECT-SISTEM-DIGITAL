@@ -5,20 +5,20 @@ USE  IEEE.STD_LOGIC_UNSIGNED.ALL;
  
 ENTITY display_vga  IS 
 	PORT( 
-	    i_clk           : IN BIT;
+	    i_clk           : IN STD_LOGIC;
 	    jump 			: IN STD_LOGIC;
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
+	    hit				: BUFFER STD_LOGIC;
+		airborne		: BUFFER STD_LOGIC;
 	    VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_HS          : OUT STD_LOGIC;
 	    VGA_VS          : OUT STD_LOGIC;
 	    VGA_CLK         : OUT STD_LOGIC;
-	    VGA_BLANK       : OUT STD_LOGIC;
-	    hit				: BUFFER STD_LOGIC;
-		airborne		: BUFFER STD_LOGIC);
+	    VGA_BLANK       : OUT STD_LOGIC);
 		
 END display_vga; 
 
@@ -36,10 +36,9 @@ SIGNAL  red_on              :        STD_LOGIC;
 SIGNAL  green_on            :        STD_LOGIC;              
 SIGNAL  blue_on             :        STD_LOGIC;              
 
-
 COMPONENT vga  IS 
 	PORT( 
-		i_clk              :  IN   BIT; 
+		i_clk              :  IN   STD_LOGIC; 
 		i_red              :  IN   STD_LOGIC; 
 		i_green            :  IN   STD_LOGIC; 
 		i_blue             :  IN   STD_LOGIC; 
@@ -54,18 +53,18 @@ END COMPONENT;
 
 COMPONENT color_rom_vhd  IS 
 	PORT( 
-		CLOCK   	    : IN BIT;
+		CLOCK   	    : IN STD_LOGIC;
 		jump 			: IN STD_LOGIC;
 		reset 			: IN STD_LOGIC;
 		start			: IN STD_LOGIC;
 		random 			: IN STD_LOGIC;
-		airborne		: OUT STD_LOGIC;
 	    i_pixel_column  : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    i_pixel_row     : IN STD_LOGIC_VECTOR( 9 DOWNTO 0 );
 	    o_red           : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_green         : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
 	    o_blue          : OUT STD_LOGIC_VECTOR( 7 DOWNTO 0 );
-	    hit				: OUT STD_LOGIC);
+	    hit				: BUFFER STD_LOGIC;
+		airborne		: OUT STD_LOGIC);
 	    
 END COMPONENT;
 
@@ -92,13 +91,14 @@ color_rom0 : color_rom_vhd
    reset			=> reset,
    start			=> start,
    random			=> random,
-   airborne			=> airborne,
    i_pixel_column   => pixel_column,
    i_pixel_row      => pixel_row,
    o_red            => red_color,
    o_green          => green_color,
    o_blue           => blue_color,
-   hit				=> hit);
+   hit				=> hit,
+   airborne			=> airborne
+   );
    
 red   <= red_color  (7 DOWNTO 2) ;
 green <= green_color(7 DOWNTO 2) ;
