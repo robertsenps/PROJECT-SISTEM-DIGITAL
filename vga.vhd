@@ -30,6 +30,7 @@ CONSTANT TVB1   : INTEGER := 494;
 CONSTANT TVB2   : INTEGER := 495;
 CONSTANT TVD    : INTEGER := 480;
 
+SIGNAL clock_25MHz  :  STD_LOGIC; 
 SIGNAL horiz_sync   :  STD_LOGIC; 
 SIGNAL vert_sync    :  STD_LOGIC; 
 SIGNAL video_on     :  STD_LOGIC; 
@@ -37,25 +38,9 @@ SIGNAL video_on_v   :  STD_LOGIC;
 SIGNAL video_on_h   :  STD_LOGIC; 
 SIGNAL h_count      :  STD_LOGIC_VECTOR( 9 DOWNTO 0 ); 
 SIGNAL v_count      :  STD_LOGIC_VECTOR( 9 DOWNTO 0 ); 
-SIGNAL clk25Mhz		:  BIT;
-
-COMPONENT clockdiv IS
-PORT(
-	CLK				: IN std_logic;
-	div				: integer;
-	DIVOUT			: buffer BIT
-	);
-END COMPONENT;
 
 BEGIN 
 
-clock25Mhz : clockdiv
-PORT MAP(
-	CLK		=> i_clk,
-	div		=> 1,
-	DIVOUT	=> clk25Mhz
-		);
-		
 video_on    <= video_on_h  AND video_on_v; 
 
 o_red       <= i_red AND video_on; 
@@ -65,9 +50,20 @@ o_blue      <= i_blue AND video_on;
 o_horiz_sync  <= horiz_sync; 
 o_vert_sync   <= vert_sync; 
 
+PROCESS (i_clk)
+	BEGIN
+		IF i_clk'EVENT AND i_clk='1' THEN
+			IF (clock_25MHz = '0') THEN
+				clock_25MHz <= '1';
+			ELSE
+				clock_25MHz <= '0';
+			END IF;
+		END IF;
+	END PROCESS;
+
 PROCESS 
 	BEGIN 
-	WAIT UNTIL(clk25Mhz'EVENT  ) AND ( clk25Mhz	 = '1'  ); 
+	WAIT UNTIL(  clock_25MHz'EVENT  ) AND ( clock_25MHz  = '1'  ); 
 	IF ( h_count  = TH-1 ) THEN 
 		h_count  <= (others=>'0'); 
 	ELSE 

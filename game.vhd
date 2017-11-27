@@ -12,8 +12,8 @@ ENTITY game IS
 	    VGA_B		: OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	    VGA_HS		: OUT STD_LOGIC;
 	    VGA_VS		: OUT STD_LOGIC;
---	    VGA_CLK		: OUT STD_LOGIC;
---	    VGA_BLANK	: OUT STD_LOGIC;
+	    VGA_CLK		: OUT STD_LOGIC;
+	    VGA_BLANK	: OUT STD_LOGIC;
 	    HEX1		: OUT STD_LOGIC_VECTOR(1 TO 7);
 	    HEX2		: OUT STD_LOGIC_VECTOR(1 TO 7);
 	    LEDR		: OUT STD_LOGIC_VECTOR(0 TO 9);
@@ -37,8 +37,7 @@ SIGNAL airborne_i	: STD_LOGIC;
 SIGNAL airborne_o1	: STD_LOGIC;
 SIGNAL airborne_o2	: STD_LOGIC;
 SIGNAL count		: STD_LOGIC_VECTOR(3 DOWNTO 0);
-SIGNAL clock25MHz 	: BIT;
-SIGNAL clock5hz		: BIT;
+SIGNAL clock25MHz 	: STD_LOGIC;
 
 COMPONENT fsm IS
 PORT(
@@ -54,7 +53,7 @@ PORT(
 	);
 END COMPONENT;
 
-COMPONENT display_vga IS
+COMPONENT display_vhd IS
 PORT(
 	i_clk           : IN STD_LOGIC;
 	jump 			: IN STD_LOGIC;
@@ -62,15 +61,17 @@ PORT(
 	start			: IN STD_LOGIC;
 	random 			: IN STD_LOGIC;
 	hit_i			: IN STD_LOGIC;
+	f_counter		: IN STD_LOGIC;
+	finish			: IN STD_LOGIC;
 	hit_o			: OUT STD_LOGIC;
 	airborne		: OUT STD_LOGIC;
 	VGA_R           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_G           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_B           : OUT STD_LOGIC_VECTOR( 5 DOWNTO 0 );
 	VGA_HS          : OUT STD_LOGIC;
-	VGA_VS          : OUT STD_LOGIC
---	VGA_CLK         : OUT STD_LOGIC;
---	VGA_BLANK       : OUT STD_LOGIC
+	VGA_VS          : OUT STD_LOGIC;
+	VGA_CLK         : OUT STD_LOGIC;
+	VGA_BLANK       : OUT STD_LOGIC
 	);
 END COMPONENT;
 
@@ -100,35 +101,15 @@ PORT(
 	);
 END COMPONENT;
 
-COMPONENT clockdiv IS
-PORT(
-	CLK				: IN std_logic;
-	div				: integer;
-	DIVOUT			: buffer BIT
-	);
-END COMPONENT;
 
 BEGIN
 
-clockset : clockdiv
-PORT MAP(
-	CLK		=> CLOCK_50,
-	div		=> 1,
-	DIVOUT	=> clock25MHz
-		);
+clock25Mhz <= CLOCK_50;
 
---clockset1 : clockdiv
---PORT MAP(
---	CLK		=> CLOCK_50,
---	div		=> 5000000,
---	DIVOUT	=> clock5Hz
---		);
-	
 PROCESS (KEY,clock25MHz)
 BEGIN
 	IF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(2) = '0') THEN
 		reset <= '1';
-		hit_o1 <= '0';
 	ELSIF (clock25MHz = '1' AND clock25MHz'EVENT AND KEY(1) = '0') THEN
 		start <= '1';
 		reset <= '0';
@@ -148,7 +129,7 @@ PORT MAP(
 	random			=> randomz
 		);
 	
-displayvga : display_vga
+displayvga : display_vhd
 PORT MAP(
 	i_clk           => CLOCK_50,
     jump 			=> jump,
@@ -156,15 +137,17 @@ PORT MAP(
 	start			=> start,
 	random 			=> randomz,
     hit_i			=> hit_i,
+    f_counter		=> f_counter,
+    finish			=> s_finish,
     hit_o			=> hit_o2,
     airborne		=> airborne_o2,
     VGA_R           => VGA_R,
     VGA_G           => VGA_G,
     VGA_B           => VGA_B,
     VGA_HS          => VGA_HS,
-    VGA_VS          => VGA_VS
---  VGA_CLK         => VGA_CLK,
---  VGA_BLANK       => VGA_BLANK
+    VGA_VS          => VGA_VS,
+  VGA_CLK         => VGA_CLK,
+  VGA_BLANK       => VGA_BLANK
 );
 
 mainstage : fsm
@@ -210,7 +193,7 @@ BEGIN
 	END IF;
 END PROCESS;
 
-hit_i <= hit_o1 OR hit_o2;
+hit_i <= hit_o2;
 airborne_i <= airborne_o1 OR airborne_o2;
 
 END behavioral;

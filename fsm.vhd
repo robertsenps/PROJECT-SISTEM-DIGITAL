@@ -35,7 +35,7 @@ BEGIN
 clock50hz : clockdiv
 PORT MAP(
 	CLK 	=> i_clk,
-	div		=> 1,
+	div		=> 250000,
 	DIVOUT	=> clk25MHz
 		);
 

@@ -33,8 +33,8 @@ BEGIN
 					div		=> 50000000,
 					DIVOUT	=> clock);
 	
-	PROCESS (clock,start,die)
-		CONSTANT max_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0001";
+	PROCESS (clock,start)
+		CONSTANT max_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "1010";
 		CONSTANT min_count	: STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";
 	
 	BEGIN
@@ -46,14 +46,14 @@ BEGIN
 			IF f_condition = '1' THEN
 				f_condition <= '0';
 			ELSIF stopper = '0' THEN
-				IF die = '0' THEN
+			IF die = '0' THEN
 					IF count < max_count THEN
 						count <= count + 1;
 					ELSE
 						f_condition <= '1';
 						stopper <= '1';
 					END IF;
-				END IF;
+			END IF;
 			END IF;
 		END IF;
 	END PROCESS;
